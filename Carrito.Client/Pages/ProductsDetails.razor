@@ -1,0 +1,82 @@
+﻿@page "/product/{Id:int}"
+@using Services
+@using Shared.Models
+@inject ProductService ProductService
+@using MudBlazor
+<h3>Detalles del Producto</h3>
+
+@if (product == null)
+{
+    <p><em>Cargando detalles del producto...</em></p>
+}
+else
+{
+    <div class="product-details">
+        <img src="@product.ImageUrl" alt="@product.Title" class="product-image-large" />
+        <div class="product-info">
+            <h4>@product.Title</h4>
+            <p>@product.Description</p>
+            <p><strong>Precio:</strong> @product.Price.ToString("C")</p>
+            <button @onclick="AddToCart">Agregar al Carrito</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private Product product;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        product = await ProductService.GetProductByIdAsync(Id);
+    }
+
+    private void AddToCart()
+    {
+        // Implementar funcionalidad de agregar al carrito
+        Console.WriteLine($"Producto agregado desde detalles: {product.Title}");
+    }
+}
+
+<style>
+    .product-details {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+        .product-details {
+            flex-direction: row;
+            align-items: flex-start;
+        }
+    }
+
+    .product-image-large {
+        max-width: 300px;
+        height: auto;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    .product-info {
+        max-width: 600px;
+    }
+
+    button {
+        margin-top: 12px;
+        padding: 10px 16px;
+        border: none;
+        background-color: #28a745;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #218838;
+    }
+</style>

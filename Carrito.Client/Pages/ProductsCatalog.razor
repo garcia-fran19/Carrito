@@ -1,0 +1,84 @@
+﻿@page "/catalog"
+@using Services
+@using Shared.Models
+@inject ProductService ProductService
+
+<h3>Catálogo de Productos</h3>
+
+@if (products == null)
+{
+    <p><em>Cargando productos...</em></p>
+}
+else
+{
+    <div class="product-grid">
+        @foreach (var product in products)
+        {
+            <div class="product-card">
+                <img src="@product.ImageUrl" alt="@product.Title" class="product-image" />
+                <h4>@product.Title</h4>
+                <p>@product.Price.ToString("C")</p>
+                <button @onclick="() => AddToCart(product)">Agregar al Carrito</button>
+                <button @onclick="() => ViewDetails(product.Id)">Ver Detalles</button>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Product> products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetProductsAsync();
+    }
+
+    private void AddToCart(Product product)
+    {
+        // Implementar funcionalidad de agregar al carrito
+        Console.WriteLine($"Producto agregado: {product.Title}");
+    }
+
+    private void ViewDetails(int productId)
+    {
+        NavigationManager.NavigateTo($"/product/{productId}");
+    }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+}
+
+<style>
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    .product-card {
+        border: 1px solid #ccc;
+        padding: 16px;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .product-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 12px;
+    }
+
+    button {
+        margin: 4px;
+        padding: 8px 12px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #0056b3;
+    }
+</style>
